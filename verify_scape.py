@@ -11,45 +11,52 @@ import datetime as dt
 dt_year = dt.datetime.now()
 current_year = dt_year.year
 base_url = "https://www.numbeo.com/cost-of-living/rankings.jsp?title="
-base_url_rankings = base_url + str(current_year)
-print(f"Fetching data from: {base_url_rankings}")
 
 cities_turkey = ["Ankara", "Istanbul", "Izmir", "Bursa", "Adana", "Konya", "Antalya", "Mersin", "Eskisehir", "Kocaeli"]
 cost_of_living_data = {}
-print(cities_turkey[1])
+years_to_check = range(current_year, current_year - 5, -1) # Check current year and previous 4
 
-try:
-    response = requests.get(base_url_rankings, timeout=10)
-    response.raise_for_status()
-    soup = BeautifulSoup(response.content, 'html.parser')
-    print("response.content: ")
-    print(response.content)
-    print("response: ")
-    print(response)
-    rankings_table = soup.find('table', id='t2')
+for year in years_to_check:
+    url = base_url + str(year)
+    print(f"Fetching data from: {url}")
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.content, 'html.parser')
+        rankings_table = soup.find('table', id='t2')
 
-    if rankings_table:
-        tbody = rankings_table.find('tbody')
-        if tbody:
-            rows = tbody.find_all('tr', style="width: 100%")
-            for row in rows:
-                columns = row.find_all('td')
-                if len(columns) >= 3:
-                    city_element = columns[1].find('a', class_='cityOrCountryInIndicesTable')
-                    col_index_element = columns[2]
-                    if city_element and col_index_element:
-                        city = city_element.get_text(strip=True).split(',')[0].strip()
-                        col_index_text = col_index_element.get_text(strip=True)
-                        try:
-                            cost_of_living_index = float(col_index_text)
-                            if city in cities_turkey:
-                                cost_of_living_data[city] = cost_of_living_index
-                                print(f"  Cost of Living Index for {city}: {cost_of_living_index}")
-                        except ValueError:
-                            print(f"  Could not convert COL index for {city} to a number.")
-    time.sleep(1)
-except requests.exceptions.RequestException as e:
-    print(f"  Error fetching data from {base_url_rankings}: {e}")
+        if rankings_table:
+            tbody = rankings_table.find('tbody')
+            if tbody:
+                rows = tbody.find_all('tr', style="width: 100%")
+                for row in rows:
+                    columns = row.find_all('td')
+                    if len(columns) >= 3:
+                        city_element = columns[1].find('a', class_='cityOrCountryInIndicesTable')
+                        col_index_element = columns[2]
+                        if city_element and col_index_element:
+                            city = city_element.get_text(strip=True).split(',')[0].strip()
+                            col_index_text = col_index_element.get_text(strip=True)
+                            try:
+                                cost_of_living_index = float(col_index_text)
+                                if city in cities_turkey and city not in cost_of_living_data:
+                                    cost_of_living_data[city] = cost_of_living_index
+                                    print(f"  Cost of Living Index for {city} ({year}): {cost_of_living_index}")
+                            except ValueError:
+                                print(f"  Could not convert COL index for {city} ({year}) to a number.")
+        time.sleep(1)
+    except requests.exceptions.RequestException as e:
+        print(f"  Error fetching data from {url}: {e}")
+
+    if len(cost_of_living_data) == len(cities_turkey):
+        print("\nSuccessfully gathered Cost of Living Data for all target cities.")
+        break
+    elif year == current_year - 4 and len(cost_of_living_data) < len(cities_turkey):
+        print("\nCould not gather Cost of Living Data for all target cities within the last 5 years.")
+        break
+    elif year < current_year and len(cost_of_living_data) < len(cities_turkey):
+        remaining_cities = [city for city in cities_turkey if city not in cost_of_living_data]
+        print(f"  Remaining cities to find: {remaining_cities}")
 
 print("\nGathered Cost of Living Data for Turkey:", cost_of_living_data)
 
@@ -61,11 +68,9 @@ city_coordinates = {
     "Bursa": (40.1833, 29.0667),
     "Antalya": (36.9081, 30.6956),
     "Adana": (37.0000, 35.3213),
-    "Gaziantep": (37.0667, 37.3833),
     "Konya": (37.8714, 32.4846),
     "Mersin": (36.8000, 34.6333),
     "Eskisehir": (39.7767, 30.5206),
-    "Samsun": (41.2906, 36.3358),
     "Kocaeli": (40.7667, 29.9167)
 }
 
