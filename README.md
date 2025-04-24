@@ -8,7 +8,7 @@ The script performs the following steps:
 
 1.  **Scrapes Data:** Fetches the cost of living rankings for the current year from Numbeo ([https://www.numbeo.com/cost-of-living/rankings.jsp](https://www.numbeo.com/cost-of-living/rankings.jsp)).
 2.  **Extracts City Data:** Parses the HTML to extract the Cost of Living Index for a predefined list of major Turkish cities.
-3.  **Geocoding:** Uses a hardcoded dictionary to associate these cities with their approximate latitudes and longitudes.
+3.  **Geocoding:** Uses a hardcoded dictionary to associate these cities with their approximate latitudes and longitudes.git 
 4.  **Data Structuring:** Creates a Pandas DataFrame to organize the city names, coordinates, and cost of living indices.
 5.  **Heatmap Visualization:**
     * Uses the `cartopy` library to create a map of Turkey.
