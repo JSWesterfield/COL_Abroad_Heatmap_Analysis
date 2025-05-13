@@ -14,7 +14,7 @@ base_url = "https://www.numbeo.com/cost-of-living/rankings.jsp?title="
 
 cities_turkey = ["Ankara", "Istanbul", "Izmir", "Bursa", "Adana", "Konya", "Antalya", "Mersin", "Eskisehir", "Kocaeli"]
 cost_of_living_data = {}
-years_to_check = range(current_year, current_year - 5, -1) # Check current year and previous 4
+years_to_check = range(current_year, current_year - 4, -1) # Check current year and previous 4
 
 for year in years_to_check:
     url = base_url + str(year)

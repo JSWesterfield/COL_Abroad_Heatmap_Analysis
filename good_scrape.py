@@ -37,7 +37,8 @@ try:
             for row in rows:
                 columns = row.find_all('td')
                 if len(columns) >= 3:  # Ensure there are at least city and COL index columns
-                    city_element = columns[1].find('a', class_='cityOrCountryInIndicesTable')
+                    # city_element = columns[1].find('a', class_='cityOrCountryInIndicesTable')
+                    city_element = columns[1]
                     col_index_element = columns[2]
 
                     if city_element and col_index_element:
