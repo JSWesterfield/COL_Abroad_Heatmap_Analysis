@@ -27,4 +27,4 @@ The script performs the following steps:
 Before running the script, ensure you have the following Python libraries installed:
 
 ```bash
-pip install requests beautifulsoup4 pandas matplotlib cartopy scipy
+pip install requests beautifulsoup4 pandas geopandas matplotlib seaborn python-dotenv
